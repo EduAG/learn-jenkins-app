@@ -28,7 +28,7 @@ pipeline{
                 echo 'Test stages'
                 sh '''
                     ls -la
-                    test -f build/INDEX && echo "file exist" || echo "file not extist"
+                    test -f build/$INDEX && echo "file exist" || echo "file not extist"
                     npm test
                 '''
             }
