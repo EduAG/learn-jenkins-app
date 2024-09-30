@@ -27,7 +27,7 @@ pipeline{
         }*/
         //Section to perform Test
 
-        stage('E2Epla'){
+        stage('E2E'){
             agent{
                 docker{
                     image 'mcr.microsoft.com/playwright:v1.47.2-noble'
@@ -37,7 +37,8 @@ pipeline{
             steps{
                 echo 'Test stages'
                 sh '''
-                    npm install -g serve
+                    npm install serve
+                    node_modules\.bin\serve -s build
                     serve -s build
                     npx playwright test
                 '''
