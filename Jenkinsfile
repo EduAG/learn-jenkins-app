@@ -6,7 +6,7 @@ pipeline{
         INDEX = 'index.html'
     }
     stages{
-        //Section to build the application
+        /*//Section to build the application
         stage('Build'){
             agent{
                 docker{
@@ -24,8 +24,26 @@ pipeline{
                     ls -la
                 '''
             }
-        }
+        }*/
         //Section to perform Test
+
+        stage('E2Epla'){
+            agent{
+                docker{
+                    image 'docker pull mcr.microsoft.com/playwright:v1.47.2-noble'
+                    reuseNode true
+                }
+            }
+            steps{
+                echo 'Test stages'
+                sh '''
+                    npm install -g serve
+                    serve -s build
+                    npx playwright test
+                '''
+            }
+        }
+
         stage('Test'){
             agent{
                 docker{
