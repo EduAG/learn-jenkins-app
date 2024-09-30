@@ -1,10 +1,12 @@
 pipeline{
     agent any
 
+    //Section to define global variables
     environment{
         INDEX = 'index.html'
     }
     stages{
+        //Section to build the application
         stage('Build'){
             agent{
                 docker{
@@ -23,6 +25,7 @@ pipeline{
                 '''
             }
         }
+        //Section to perform Test
         stage('Test'){
             agent{
                 docker{
@@ -33,7 +36,7 @@ pipeline{
             steps{
                 echo 'Test stages'
                 sh '''
-                    ls -la
+                    #ls -la
                     test -f build/$INDEX && echo "file exist" || echo "file not extist"
                     npm test
                 '''
@@ -41,6 +44,7 @@ pipeline{
         }
     }
 
+    //These section is used for extract the Junit information
     post{
         always{
             junit 'test-results/junit.xml'
