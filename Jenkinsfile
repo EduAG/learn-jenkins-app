@@ -1,5 +1,9 @@
 pipeline{
     agent any
+
+    environment{
+        INDEX = 'index.html'
+    }
     stages{
         stage('Build'){
             agent{
@@ -19,5 +23,16 @@ pipeline{
                 '''
             }
         }
+        stage('Test'){
+            steps{
+                echo 'Test stages'
+                sh '''
+                    ls -la
+                    test -f build/INDEX && echo "file exist" || echo "file not extist"
+                    npm test
+                '''
+            }
+        }
     }
+    
 }
