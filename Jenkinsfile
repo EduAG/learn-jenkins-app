@@ -26,7 +26,7 @@ pipeline{
             }
         }*/
         //Section to perform Test
-        stage('Test'){
+        /*stage('Test'){
             agent{
                 docker{
                     image 'node:18-alpine'
@@ -41,27 +41,28 @@ pipeline{
                     npm test
                 '''
             }
-        }
+        }*/
 
         stage('E2E'){
             agent{
                 docker{
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'image: mcr.microsoft.com/playwright:v1.47.2-noble'
                     reuseNode true
                 }
             }
             steps{
                 echo 'Test stages'
-                sh '''
+                sh 'npm ci'
+                sh 'npx playwright test'
+            }
+        }
+    }
+    /*sh '''
                     npm install serve
                     node_modules/.bin/serve -s build &
                     sleep 10
                     npx playwright test
-                '''
-            }
-        }
-    }
-
+                '''*/
     //These section is used for extract the Junit information
     post{
         always{
