@@ -52,8 +52,11 @@ pipeline{
             }
             steps{
                 echo 'Test stages'
-                sh 'npm ci'
-                sh 'npx playwright test'
+                sh '''
+                    npm ci
+                    sleep 10
+                    npx playwright test
+                '''
             }
         }
     }
