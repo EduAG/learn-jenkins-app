@@ -26,25 +26,6 @@ pipeline{
             }
         }*/
         //Section to perform Test
-
-        stage('E2E'){
-            agent{
-                docker{
-                    image 'mcr.microsoft.com/playwright:v1.47.2-noble'
-                    reuseNode true
-                }
-            }
-            steps{
-                echo 'Test stages'
-                sh '''
-                    npm install serve
-                    node_modules/.bin/serve -s build
-                    serve -s build
-                    npx playwright test
-                '''
-            }
-        }
-
         stage('Test'){
             agent{
                 docker{
@@ -58,6 +39,24 @@ pipeline{
                     #ls -la
                     test -f build/$INDEX && echo "file exist" || echo "file not extist"
                     npm test
+                '''
+            }
+        }
+
+        stage('E2E'){
+            agent{
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.47.2-noble'
+                    reuseNode true
+                }
+            }
+            steps{
+                echo 'Test stages'
+                sh '''
+                    npm install serve
+                    node_modules/.bin/serve -s build &
+                    sleep 10
+                    npx playwright test
                 '''
             }
         }
