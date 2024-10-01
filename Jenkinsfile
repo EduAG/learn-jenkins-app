@@ -53,8 +53,7 @@ pipeline{
             steps{
                 echo 'Test stages'
                 sh '''
-                    npm install serve
-                    node_modules/.bin/serve -s build &
+                    npm run build
                     sleep 10
                     npx playwright test
                 '''
