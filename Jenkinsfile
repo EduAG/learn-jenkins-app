@@ -2,9 +2,9 @@ pipeline{
     agent any
 
     //Section to define global variables
-    environment{
+    /*environment{
         INDEX = 'index.html'
-    }
+    }*/
     stages{
         /*//Section to build the application
         stage('Build'){
@@ -37,7 +37,7 @@ pipeline{
                 echo 'Test stages'
                 sh '''
                     #ls -la
-                    test -f build/$INDEX && echo "file exist" || echo "file not extist"
+                    #test -f build/$INDEX && echo "file exist" || echo "file not extist"
                     npm test
                 '''
             }
@@ -46,14 +46,15 @@ pipeline{
         stage('E2E'){
             agent{
                 docker{
-                    image 'mcr.microsoft.com/playwright:v1.47.2-noble'
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
                 }
             }
             steps{
                 echo 'Test stages'
                 sh '''
-                    npm run build
+                    npm install serve
+                    node_modules/.bin/serve -s build &
                     sleep 10
                     npx playwright test
                 '''
