@@ -38,6 +38,11 @@ pipeline{
                             npm test
                         '''
                     }
+                     post{
+                        always{
+                            junit 'jest-results/junit.xml'
+                        }
+                    }
                 }
 
                 stage('E2E'){
@@ -50,23 +55,22 @@ pipeline{
                     steps{
                         echo 'Test stages'
                         sh '''
+                            jest --detectOpenHandles
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
                             npx playwright test --reporter=html
                         '''
                     }
+                        
+                    post{
+                        always{
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwrigth HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
                 }
             }
         }
        
-    }
-    
-    post{
-        always{
-            junit 'jest-results/junit.xml'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwrigth HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-        }
-    }
-    
+    }    
 }
