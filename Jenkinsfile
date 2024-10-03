@@ -1,16 +1,17 @@
-pipeline{
+pipeline {
     agent any
 
-    stages{
-        /*//Section to build the application
-        stage('Build'){
-            agent{
-                docker{
+    stages {
+        // Uncomment if Build stage is required
+        /*
+        stage('Build') {
+            agent {
+                docker {
                     image 'node:18-alpine'
                     reuseNode true
                 }
             }
-            steps{
+            steps {
                 sh '''
                     ls -la
                     node --version
@@ -20,57 +21,57 @@ pipeline{
                     ls -la
                 '''
             }
-        }*/
+        }
+        */
 
-        stage('Test'){
+        stage('Test') {
             parallel {
-                stage('Unit Test'){
-                    agent{
-                        docker{
+                stage('Unit Test') {
+                    agent {
+                        docker {
                             image 'node:18-alpine'
                             reuseNode true
                         }
                     }
-                    steps{
-                        echo 'Test stages'
+                    steps {
+                        echo 'Running Unit Tests'
                         sh '''
-                            #test -f build/index.html && echo "file exist" || echo "file not extist"
                             npm test
                         '''
                     }
-                     post{
-                        always{
+                    post {
+                        always {
                             junit 'jest-results/junit.xml'
                         }
                     }
                 }
 
-                stage('E2E'){
-                    agent{
-                        docker{
+                stage('E2E') {
+                    agent {
+                        docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                             reuseNode true
                         }
                     }
-                    steps{
-                        echo 'Test stages'
+                    steps {
+                        echo 'Running E2E Tests'
                         sh '''
                             jest --detectOpenHandles
                             npm install serve
                             node_modules/.bin/serve -s build &
+                            SERVER_PID=$!
                             sleep 10
                             npx playwright test --reporter=html
+                            kill $SERVER_PID
                         '''
                     }
-                        
-                    post{
-                        always{
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwrigth HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    post {
+                        always {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
                 }
             }
         }
-       
-    }    
+    }
 }
