@@ -105,9 +105,9 @@ pipeline {
                     reuseNode true
                 }
             }
-            // environment {
-            //     CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
-            // }
+            environment {
+                CI_ENVIRONMENT_URL = ""
+            }
             steps {
                 echo 'Deploy staging'
                 sh '''
