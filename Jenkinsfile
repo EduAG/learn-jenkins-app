@@ -76,7 +76,7 @@ pipeline {
             }
         }
 
-        stage('Deploy staging') {
+        /*stage('Deploy staging') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -85,20 +85,20 @@ pipeline {
             }
             steps {
                 sh '''
+                    
                     npm install netlify-cli node-jq
                     node_modules/.bin/netlify --version
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     #node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
-                    
                 '''
                 script{
                     env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true )
                 }
             }
-        }
+        }*/
 
-        stage('Staging E2E') {
+        stage('Deploy staging') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -109,27 +109,35 @@ pipeline {
                 CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
             }
             steps {
-                echo 'Prod E2E'
+                echo 'Deploy staging'
                 sh '''
-
+                    node --version
+                    npm install netlify-cli node-jq
+                    node_modules/.bin/netlify --version
+                    echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
+                    #node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
                     npx playwright test  --reporter=html
                 '''
+                script{
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true )
+                }
             }
 
             post {
                 always {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Stage Staging E2E', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Staging playwright', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
         }
 
-        stage('Aproval'){
+        /*stage('Aproval'){
             steps{
                 timeout(time: 15, unit: 'MINUTES') {
                     input message: 'Do you wish to deploy to production?', ok: 'Yes, I am sure!'
                 }
             }
-        }
+        }*/
 
         /*stage('Deploy prod') {
             agent {
@@ -160,7 +168,7 @@ pipeline {
                 CI_ENVIRONMENT_URL = 'https://darling-basbousa-faebfd.netlify.app'
             }
             steps {
-                echo 'Prod E2E'
+                echo 'Deploy prod'
                 sh '''
                     node --version
                     npm install netlify-cli
