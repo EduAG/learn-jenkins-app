@@ -10,7 +10,7 @@ pipeline {
     stages {
 
         stage('Docker'){
-            step{
+            steps{
                 sh 'docker build -t my-playwriht .'
             }
         }
