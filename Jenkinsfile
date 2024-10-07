@@ -60,7 +60,7 @@ pipeline {
                 stage('Local E2E') {
                     agent {
                         docker {
-                            image 'playwright'
+                            image 'my-playwright'
                             reuseNode true
                         }
                     }
@@ -85,7 +85,7 @@ pipeline {
         stage('Deploy staging') {
             agent {
                 docker {
-                    image 'playwright'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -115,7 +115,7 @@ pipeline {
         stage('Deploy prod') {
             agent {
                 docker {
-                    image 'playwright'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
