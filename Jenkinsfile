@@ -9,24 +9,6 @@ pipeline {
 
     stages {
 
-        stage('AWS'){
-            agent{
-                docker{
-                    image 'my-aws'
-                    args "--entrypoint=''"
-                }
-            }
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                        aws --version
-                        echo "Hello s3" > index.html
-                        aws s3 cp index.html s3://learn-jenkins-2024108218/index.html
-                    '''
-                }   
-            }
-        }
-
         stage('Build') {
             agent {
                 docker {
@@ -123,12 +105,37 @@ pipeline {
                 }
             }
         }
+        
+
+        stage('AWS'){
+            agent{
+                docker{
+                    image 'my-aws'
+                    args "--entrypoint=''"
+                }
+            }
+            environment {
+                AWS_S3_BUCKET = 'learn-jenkins-2024108218'
+            }
+             steps{
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        echo "Hello s3" > index.html
+                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                        aws s3 sync build s3://$AWS_S3_BUCKET .
+                    '''
+                }   
+            }
+        }
 
         stage('Deploy prod') {
             agent {
                 docker {
                     image 'my-playwright'
                     reuseNode true
+                    image 'my-aws'
+                    args "--entrypoint=''"
                 }
             }
             environment {
@@ -145,6 +152,7 @@ pipeline {
                     npx playwright test  --reporter=html
                 '''
             }
+           
 
             post {
                 always {
