@@ -1,11 +1,24 @@
 pipeline {
     agent any
 
+     environment {
+        DOCKER_IMAGE_AWS = 'Dockerfile.aws'
+        DOCKER_IMAGE_PLAYWRIGTH = 'Dockerfile.my-playwright'
+    }
+
     stages {
 
         stage('Build Docker Images'){
             steps{
                 sh 'docker build -t my-playwright .'
+                sh '' 
+            }
+        }
+
+        stage('Build Docker Images'){
+            steps{
+                docker.build("my-aws:${env.DOCKER_IMAGE_AWS} .")
+                docker.build("my-playwright:${env.DOCKER_IMAGE_PLAYWRIGTH} .")    
             }
         }
     }

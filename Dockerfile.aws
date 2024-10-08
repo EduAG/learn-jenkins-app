@@ -1,0 +1,8 @@
+FROM amazon/aws-cli
+
+LABEL maintainer="jesus.e.alvarez@gmail.com"
+LABEL version="1.0"
+LABEL description="Docker image for AWS"
+
+# Verify installation
+RUN aws --version
