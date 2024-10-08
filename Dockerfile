@@ -8,8 +8,7 @@ LABEL description="Docker image for Playwright tests with Netlify CLI, node-jq, 
 
 # Install global npm packages
 RUN npm install -g netlify-cli node-jq serve
-RUN apt update
-RUN apt install jq -y
+RUN apt update && apt install jq -y
 
 # Verify installation
 RUN netlify --version && node-jq --version && serve --version
