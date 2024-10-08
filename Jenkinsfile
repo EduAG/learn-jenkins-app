@@ -112,6 +112,7 @@ pipeline {
                 docker{
                     image 'my-aws'
                     args "--entrypoint=''"
+                    reuseNode true
                 }
             }
             environment {
@@ -134,8 +135,6 @@ pipeline {
                 docker {
                     image 'my-playwright'
                     reuseNode true
-                    image 'my-aws'
-                    args "--entrypoint=''"
                 }
             }
             environment {
