@@ -20,7 +20,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        aws s3 ls
+                        echo "Hello s3" > test.txt
+                        aws s3 cp test.txt s3://learn-jenkins-2024108218/test1.txt
                     '''
                 }   
             }
