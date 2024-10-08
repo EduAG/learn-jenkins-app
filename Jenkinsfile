@@ -13,6 +13,7 @@ pipeline {
             agent{
                 docker{
                     image 'my-aws'
+                    args "--entrypoint=''"
                 }
             }
             steps{
