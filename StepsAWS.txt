@@ -1,0 +1,45 @@
+1.-
+        I was added a new Docker file named "Dockerfile.aws" 
+        where I added the FROM (FROM amazon/aws-cli) 
+        installation of aws cli (https://hub.docker.com/r/amazon/aws-cli)
+        to perform commands of AWS
+
+2.-     In the Jenkinsfile-nigthly I added a new Stage with the Build steps
+        to made the "docker build -t my-aws -f Dockerfile.aws ."
+        to precharge the image that will be use in the Jenkinsfile
+
+3.-     The creation of the Stage and the steps for AWS in Jenkisn file
+
+        stage('AWS'){
+            agent{
+                docker{
+                    image 'my-aws'
+                    reuseNode true
+                    args "--entrypoint=''"
+                }
+            }
+            environment {
+                AWS_S3_BUCKET = 'learn-jenkins-2024108218'
+            }
+             steps{
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 sync build s3://$AWS_S3_BUCKET
+                    '''
+                }   
+            }
+        }
+
+4.-      Using AWS CLI its necessary to add some credentiasl 
+         to interact wit the AWS account, for that nedded I add 
+         in IAM Dashboard a new user in the section of permissions options 
+         for these case its necessary to Attach policies directly
+         AmazonSeFullAccess
+
+5.-     Access Keys: Its neccessary to 
+        Create access key the use case Command line 
+        interface (CLI) whit these access Key we will extrat the info 
+        and in Jenkis we will go to the Credentials section 
+        Jenkins>Dashboard>Manage Jenkins>Credentials>System>Global Credentials> Add CRedentials +
+
