@@ -6,14 +6,14 @@ pipeline {
         stage('Build Docker Playwrigth'){
             steps {
                 // Building the Docker image using Dockerfile.my-playwright
-                sh 'docker build -t my-playwright -f Dockerfile.my-playwright .'
+                sh 'docker build -t my-playwright -f ci/Dockerfile.my-playwright .'
             }
         }
 
         stage('Build Docker AWS'){
             steps{
                 // Building the Docker image using Dockerfile.aws
-                sh 'docker build -t my-aws -f Dockerfile.aws .'   
+                sh 'docker build -t my-aws -f ci/Dockerfile.aws .'   
             }
         }
     }

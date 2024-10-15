@@ -5,11 +5,35 @@ pipeline {
         REACT_APP_VERSION = "1.0.$BUILD_ID"
         AWS_DEFAULT_REGION = "us-east-2"
         AWS_ECS_CLUSTER = 'JenkinsApp-Cluster2'
-        AWS_ECS_SERVICE_PROD = 'TaskDefinition' //'LearnJenkinsApp-Service-Prod'
+        AWS_ECS_SERVICE_PROD = 'TaskDefinition'
         AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition-Prod'
     }
 
     stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+            }
+        }
+
+        pipeline {
+            steps {
+                sh 'docker build -t my-jenkinsapp .'
+            }
+        }
 
         stage('Deploy AWS'){
             agent{
@@ -30,25 +54,6 @@ pipeline {
                         #aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE_PROD
                     ''' 
                 }   
-            }
-        }
-
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    ls -la
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run build
-                    ls -la
-                '''
             }
         }
 
