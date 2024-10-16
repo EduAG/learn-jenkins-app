@@ -28,13 +28,7 @@ pipeline {
                 '''
             }
         }
-
-        pipeline {
-            steps {
-                sh 'docker build -t my-jenkinsapp .'
-            }
-        }
-
+        
         stage('Deploy AWS'){
             agent{
                 docker{
