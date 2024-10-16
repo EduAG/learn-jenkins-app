@@ -5,7 +5,7 @@ pipeline {
         REACT_APP_VERSION = "1.0.$BUILD_ID"
         AWS_DEFAULT_REGION = "us-east-2"
         AWS_ECS_CLUSTER = 'JenkinsApp-Cluster2'
-        AWS_ECS_SERVICE_PROD = 'TaskDefinition'
+        AWS_ECS_SERVICE_PROD = 'LearnJenkinsApp-TaskDefinition-Prod'
         AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition-Prod'
     }
 
@@ -28,7 +28,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Deploy AWS'){
             agent{
                 docker{
