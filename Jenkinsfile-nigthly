@@ -5,9 +5,8 @@ pipeline {
 
         stage('Build Docker images'){
             steps {
-                // Building the Docker image using Dockerfile.my-playwright
-                sh 'docker build -t my-playwright -f ci/Dockerfile.my-playwright .'
-                sh 'docker build -t my-aws -f ci/Dockerfile.aws .' 
+                sh 'docker build -f ci/Dockerfile.my-playwright -t my-playwright .'
+                sh 'docker build -f ci/Dockerfile.aws -t my-aws .' 
             }
         }
     }
