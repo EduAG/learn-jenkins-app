@@ -5,4 +5,5 @@ LABEL version="1.0"
 LABEL description="Docker image for AWS"
 
 # Verify installation
-RUN aws --version
+RUN amazon-linux-extras install docker
+RUN yum install jq -y
