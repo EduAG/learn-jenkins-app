@@ -3,10 +3,17 @@ pipeline {
 
     stages {
 
-        stage('Build Docker images'){
+        stage('Build Docker Playwrigth'){
             steps {
-                sh 'docker build -f ci/Dockerfile.my-playwright -t my-playwright .'
-                sh 'docker build -f ci/Dockerfile.aws -t my-aws .' 
+                // Building the Docker image using Dockerfile.my-playwright
+                sh 'docker build -t my-playwright -f ci/Dockerfile.my-playwright .'
+            }
+        }
+
+        stage('Build Docker AWS'){
+            steps{
+                // Building the Docker image using Dockerfile.aws
+                sh 'docker build -t my-aws -f ci/Dockerfile.aws .'   
             }
         }
     }
