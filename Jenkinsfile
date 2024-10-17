@@ -48,6 +48,7 @@ pipeline {
                         docker push $AWS_DOCKER_REGISTRY/$APP_NAME:$REACT_APP_VERSION
 
                         aws --version
+                        sed -i "s/#APP_VERSION#/$REACT_APP_VERSION/g" aws/task-definition-prod.json
                         yum install jq -y
                         LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                         echo $LATEST_TD_REVISION
